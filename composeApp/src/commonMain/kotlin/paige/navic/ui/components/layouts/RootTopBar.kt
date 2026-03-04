@@ -114,7 +114,7 @@ private fun Actions(
 	IconButton(
 		onClick = {
 			ctx.clickSound()
-			backStack.add(Screen.Search)
+			backStack.add(Screen.Search(nested = true))
 		},
 		enabled = user != null
 	) {

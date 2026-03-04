@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -101,6 +100,7 @@ enum class SearchCategory(val res: StringResource) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+	nested: Boolean,
 	viewModel: SearchViewModel = viewModel { SearchViewModel() }
 ) {
 	val query = viewModel.searchQuery
@@ -120,7 +120,7 @@ fun SearchScreen(
 			bottom = LocalContentPadding.current.calculateBottomPadding()
 		)
 	) {
-		SearchTopBar(query = query)
+		SearchTopBar(query = query, nested = nested)
 
 		SearchChips(
 			selectedCategory = selectedCategory,
@@ -291,7 +291,8 @@ private fun SearchChips(
 
 @Composable
 private fun SearchTopBar(
-	query: TextFieldState
+	query: TextFieldState,
+	nested: Boolean
 ) {
 	val ctx = LocalCtx.current
 	val backStack = LocalNavStack.current
@@ -307,29 +308,32 @@ private fun SearchTopBar(
 		Row(
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			Box(
-				modifier = Modifier.size(56.dp),
-				contentAlignment = Alignment.Center
-			) {
-				IconButton(
-					onClick = {
-						ctx.clickSound()
-						focusManager.clearFocus(true)
-						if (backStack.size > 1) backStack.removeLastOrNull()
-					}
+			if (nested) {
+				Box(
+					modifier = Modifier.size(56.dp),
+					contentAlignment = Alignment.Center
 				) {
-					Icon(
-						Icons.Outlined.ArrowBack,
-						contentDescription = stringResource(Res.string.action_navigate_back),
-						tint = MaterialTheme.colorScheme.onSurfaceVariant
-					)
+					IconButton(
+						onClick = {
+							ctx.clickSound()
+							focusManager.clearFocus(true)
+							if (backStack.size > 1) backStack.removeLastOrNull()
+						}
+					) {
+						Icon(
+							Icons.Outlined.ArrowBack,
+							contentDescription = stringResource(Res.string.action_navigate_back),
+							tint = MaterialTheme.colorScheme.onSurfaceVariant
+						)
+					}
 				}
 			}
 			BasicTextField(
 				state = query,
 				modifier = Modifier
-					.fillMaxWidth()
+					.weight(1f)
 					.height(72.dp)
+					.padding(start = if (nested) 0.dp else 18.dp)
 					.focusRequester(focusRequester),
 				lineLimits = TextFieldLineLimits.SingleLine,
 				keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),

@@ -28,6 +28,7 @@ import navic.composeapp.generated.resources.title_albums
 import navic.composeapp.generated.resources.title_artists
 import navic.composeapp.generated.resources.title_library
 import navic.composeapp.generated.resources.title_playlists
+import navic.composeapp.generated.resources.title_search
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import paige.navic.LocalCtx
@@ -44,6 +45,7 @@ import paige.navic.icons.outlined.Album
 import paige.navic.icons.outlined.Artist
 import paige.navic.icons.outlined.LibraryMusic
 import paige.navic.icons.outlined.PlaylistPlay
+import paige.navic.icons.outlined.Search
 import paige.navic.ui.components.common.animatedTabIconPainter
 import paige.navic.ui.components.dialogs.NavtabsViewModel
 import paige.navic.utils.UiState
@@ -76,6 +78,12 @@ private enum class NavItem(
 		icon = Icons.Filled.Artist,
 		iconUnselected = Icons.Outlined.Artist,
 		label = Res.string.title_artists
+	),
+	SEARCH(
+		destination = Screen.Search(),
+		icon = Icons.Outlined.Search,
+		iconUnselected = Icons.Outlined.Search,
+		label = Res.string.title_search
 	)
 }
 
@@ -107,6 +115,7 @@ fun BottomBar(
 						NavbarTab.Id.ALBUMS -> NavItem.ALBUMS
 						NavbarTab.Id.PLAYLISTS -> NavItem.PLAYLISTS
 						NavbarTab.Id.ARTISTS -> NavItem.ARTISTS
+						NavbarTab.Id.SEARCH -> NavItem.SEARCH
 					}
 					val selected = backStack.lastOrNull() == item.destination
 
@@ -153,6 +162,7 @@ fun BottomBar(
 						NavbarTab.Id.ALBUMS -> NavItem.ALBUMS
 						NavbarTab.Id.PLAYLISTS -> NavItem.PLAYLISTS
 						NavbarTab.Id.ARTISTS -> NavItem.ARTISTS
+						NavbarTab.Id.SEARCH -> NavItem.SEARCH
 					}
 					val selected = backStack.last() == item.destination
 

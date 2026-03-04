@@ -12,6 +12,7 @@ data class NavbarTab(
 		LIBRARY,
 		ALBUMS,
 		PLAYLISTS,
-		ARTISTS
+		ARTISTS,
+		SEARCH
 	}
 }

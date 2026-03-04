@@ -262,8 +262,8 @@ private fun entryProvider(
 		entry<Screen.TrackInfo> { key ->
 			TrackInfoScreen(key.track)
 		}
-		entry<Screen.Search> {
-			SearchScreen()
+		entry<Screen.Search>(metadata = navtabMetadata) { key ->
+			SearchScreen(key.nested)
 		}
 		entry<Screen.Shares> {
 			SharesScreen()
