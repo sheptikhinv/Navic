@@ -1,6 +1,6 @@
 package paige.navic.ui.screens
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -115,7 +115,7 @@ fun AlbumsScreen(
 			isRefreshing = isRefreshing || albumsState is UiState.Loading,
 			onRefresh = { viewModel.refreshAlbums() }
 		) {
-			AnimatedContent(albumsState::class) {
+			Crossfade(albumsState::class) {
 				ArtGrid(
 					modifier = if (!nested)
 						Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)

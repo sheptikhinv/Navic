@@ -1,6 +1,6 @@
 package paige.navic.ui.screens
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -112,7 +112,7 @@ fun PlaylistsScreen(
 			isRefreshing = isRefreshing || playlistsState is UiState.Loading,
 			onRefresh = { viewModel.refreshPlaylists() }
 		) {
-			AnimatedContent(playlistsState::class) {
+			Crossfade(playlistsState::class) {
 				ArtGrid(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
 					when (val state = playlistsState) {
 						is UiState.Loading -> artGridPlaceholder()

@@ -44,6 +44,7 @@ import org.jetbrains.compose.resources.stringResource
 import paige.navic.LocalCtx
 import paige.navic.LocalMediaPlayer
 import paige.navic.ui.components.common.MarqueeText
+import paige.navic.utils.fadeFromTop
 import paige.subsonic.api.models.Track
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -55,30 +56,28 @@ fun QueueScreen() {
 	val currentTrack = playerState.currentTrack
 	val queue = playerState.queue
 
-	Box(modifier = Modifier.fillMaxSize()) {
-		LazyColumn(
-			modifier = Modifier.matchParentSize(),
-			contentPadding = WindowInsets.statusBars.asPaddingValues()
-				+ WindowInsets.systemBars.asPaddingValues()
-				+ PaddingValues(vertical = 70.dp, horizontal = 16.dp),
-			verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
-		) {
-			itemsIndexed(queue) { index, track ->
-				QueueScreenItem(
-					index = index,
-					count = queue.count(),
-					track = track,
-					isPlaying = currentTrack?.id == track.id
-						&& !playerState.isPaused,
-					isSelected = currentTrack?.id == track.id,
-					onClick = {
-						ctx.clickSound()
-						if (currentTrack?.id !== track.id) {
-							player.playAt(index)
-						}
+	LazyColumn(
+		modifier = Modifier.fillMaxSize().fadeFromTop(),
+		contentPadding = WindowInsets.statusBars.asPaddingValues()
+			+ WindowInsets.systemBars.asPaddingValues()
+			+ PaddingValues(vertical = 70.dp, horizontal = 16.dp),
+		verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+	) {
+		itemsIndexed(queue) { index, track ->
+			QueueScreenItem(
+				index = index,
+				count = queue.count(),
+				track = track,
+				isPlaying = currentTrack?.id == track.id
+					&& !playerState.isPaused,
+				isSelected = currentTrack?.id == track.id,
+				onClick = {
+					ctx.clickSound()
+					if (currentTrack?.id !== track.id) {
+						player.playAt(index)
 					}
-				)
-			}
+				}
+			)
 		}
 	}
 }

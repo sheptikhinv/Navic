@@ -1,6 +1,6 @@
 package paige.navic.ui.screens
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -75,7 +75,7 @@ fun ArtistsScreen(
 			isRefreshing = artistsState is UiState.Loading,
 			onRefresh = { viewModel.refreshArtists() }
 		) {
-			AnimatedContent(artistsState) {
+			Crossfade(artistsState) {
 				when (it) {
 					is UiState.Loading -> ArtGrid(Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
 						artGridPlaceholder()

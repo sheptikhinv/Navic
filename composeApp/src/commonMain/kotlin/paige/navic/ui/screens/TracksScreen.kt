@@ -1,6 +1,12 @@
 package paige.navic.ui.screens
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -108,6 +114,7 @@ import paige.navic.ui.components.layouts.TopBarButton
 import paige.navic.ui.theme.defaultFont
 import paige.navic.ui.viewmodels.TracksViewModel
 import paige.navic.utils.UiState
+import paige.navic.utils.fadeFromTop
 import paige.navic.utils.shimmerLoading
 import paige.navic.utils.toHoursMinutesSeconds
 import paige.subsonic.api.models.Album
@@ -228,7 +235,9 @@ fun TracksScreen(
 			isRefreshing = tracks is UiState.Loading,
 			onRefresh = { viewModel.refreshTracks() }
 		) {
-			AnimatedContent(tracks) {
+			Crossfade(
+				targetState = tracks
+			) {
 				when (it) {
 					is UiState.Loading -> TracksScreenPlaceholder(
 						coverId = partialTracks.id,
@@ -244,7 +253,8 @@ fun TracksScreen(
 							LazyColumn(
 								modifier = Modifier
 									.background(MaterialTheme.colorScheme.surface)
-									.fillMaxSize(),
+									.fillMaxSize()
+									.fadeFromTop(),
 								horizontalAlignment = Alignment.CenterHorizontally,
 								contentPadding = PaddingValues(
 									top = 16.dp,

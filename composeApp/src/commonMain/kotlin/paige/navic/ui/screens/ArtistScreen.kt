@@ -87,6 +87,7 @@ import paige.navic.ui.components.layouts.NestedTopBar
 import paige.navic.ui.components.layouts.TopBarButton
 import paige.navic.ui.viewmodels.ArtistViewModel
 import paige.navic.utils.UiState
+import paige.navic.utils.fadeFromTop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -190,7 +191,7 @@ fun ArtistScreen(
 						modifier = Modifier
 							.fillMaxSize()
 							.verticalScroll(rememberScrollState())
-							.padding(bottom = 117.9.dp),
+							.fadeFromTop(),
 						verticalArrangement = Arrangement.spacedBy(12.dp),
 						horizontalAlignment = Alignment.CenterHorizontally
 					) {

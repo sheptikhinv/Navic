@@ -86,6 +86,7 @@ import paige.navic.icons.outlined.Share
 import paige.navic.ui.components.common.ErrorBox
 import paige.navic.ui.viewmodels.LyricsViewModel
 import paige.navic.utils.UiState
+import paige.navic.utils.fadeFromTop
 import paige.navic.utils.rememberTrackPainter
 import paige.subsonic.api.models.Track
 import kotlin.math.abs
@@ -217,7 +218,7 @@ fun LyricsScreen(
 						}
 
 						LazyColumn(
-							Modifier.fillMaxSize(),
+							Modifier.fillMaxSize().fadeFromTop(),
 							state = listState,
 							contentPadding = WindowInsets.statusBars.asPaddingValues()
 								+ WindowInsets.systemBars.asPaddingValues()
