@@ -159,7 +159,10 @@ class AndroidMediaPlayerViewModel(
 						setPackage(application.packageName)
 						putExtra("isPlaying", isPlaying)
 						putExtra("title", _uiState.value.currentTrack?.title ?: "Unknown track")
-						putExtra("artist", _uiState.value.currentTrack?.artistName ?: "Unknown artist")
+						putExtra(
+							"artist",
+							_uiState.value.currentTrack?.artistName ?: "Unknown artist"
+						)
 						putExtra("artUrl", _uiState.value.currentTrack?.coverArtId?.let { id ->
 							SessionManager.api.getCoverArtUrl(id, auth = true)
 						})
@@ -181,18 +184,22 @@ class AndroidMediaPlayerViewModel(
 					_uiState.update { it.copy(repeatMode = repeatMode) }
 				}
 			})
-			updatePlaybackState()
-
-			pendingSyncState?.let { state ->
-				syncPlayerWithState(state)
-				pendingSyncState = null
+			if (mediaItemCount > 0) {
+				updatePlaybackState()
+				if (isPlaying) startProgressLoop()
+			} else {
+				updatePlaybackState()
+				pendingSyncState?.let { state ->
+					syncPlayerWithState(state)
+				}
 			}
+			pendingSyncState = null
 		}
 	}
 
 	private fun refreshCurrentCollection(albumId: String) {
 		if (loadingCollectionId == albumId) return
-			loadingCollectionId = albumId
+		loadingCollectionId = albumId
 
 		viewModelScope.launch {
 			runCatching {
@@ -271,7 +278,8 @@ class AndroidMediaPlayerViewModel(
 			while (controller?.isPlaying == true) {
 				val player = controller ?: break
 				val duration = player.duration.coerceAtLeast(1)
-				val progress = (player.currentPosition.toFloat() / duration.toFloat()).coerceIn(0f, 1f)
+				val progress =
+					(player.currentPosition.toFloat() / duration.toFloat()).coerceIn(0f, 1f)
 				_uiState.update { it.copy(progress = progress) }
 				delay(200)
 			}
@@ -289,21 +297,25 @@ class AndroidMediaPlayerViewModel(
 
 	override fun addToQueueSingle(track: Song) {
 		controller?.addMediaItem(track.toMediaItem())
-		_uiState.update { it.copy(
-			queue = it.queue + track,
-			currentIndex = it.queue.indexOf(it.currentTrack),
-			currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
-		) }
+		_uiState.update {
+			it.copy(
+				queue = it.queue + track,
+				currentIndex = it.queue.indexOf(it.currentTrack),
+				currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
+			)
+		}
 	}
 
 	override fun addToQueue(tracks: SongCollection) {
 		val items = tracks.songs.map { it.toMediaItem() }
 		controller?.addMediaItems(items)
-		_uiState.update { it.copy(
-			queue = it.queue + tracks.songs,
-			currentIndex = it.queue.indexOf(it.currentTrack),
-			currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
-		) }
+		_uiState.update {
+			it.copy(
+				queue = it.queue + tracks.songs,
+				currentIndex = it.queue.indexOf(it.currentTrack),
+				currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
+			)
+		}
 	}
 
 	override fun removeFromQueue(index: Int) {
@@ -358,16 +370,27 @@ class AndroidMediaPlayerViewModel(
 			player.play()
 		}
 
-		_uiState.update { it.copy(
-			queue = shuffledTracks,
-			currentIndex = it.queue.indexOf(it.currentTrack),
-			currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
-		) }
+		_uiState.update {
+			it.copy(
+				queue = shuffledTracks,
+				currentIndex = it.queue.indexOf(it.currentTrack),
+				currentTrack = if (it.queue.indexOf(it.currentTrack) == -1) null else it.currentTrack
+			)
+		}
 	}
 
-	override fun pause() { controller?.pause() }
-	override fun resume() { controller?.play() }
-	override fun next() { if (controller?.hasNextMediaItem() == true) controller?.seekToNextMediaItem() }
+	override fun pause() {
+		controller?.pause()
+	}
+
+	override fun resume() {
+		controller?.play()
+	}
+
+	override fun next() {
+		if (controller?.hasNextMediaItem() == true) controller?.seekToNextMediaItem()
+	}
+
 	override fun previous() {
 		val controller = controller ?: return
 		if (controller.hasPreviousMediaItem() && controller.currentPosition <= 1000) {
@@ -376,11 +399,13 @@ class AndroidMediaPlayerViewModel(
 			controller.seekTo(0)
 		}
 	}
+
 	override fun toggleShuffle() {
 		controller?.let { player ->
 			player.shuffleModeEnabled = !player.shuffleModeEnabled
 		}
 	}
+
 	override fun toggleRepeat() {
 		controller?.let { player ->
 			player.repeatMode = when (player.repeatMode) {
